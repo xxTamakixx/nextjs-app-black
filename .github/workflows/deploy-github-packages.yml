@@ -41,3 +41,31 @@ jobs:
          push: true
          tags: ${{ steps.meta.outputs.tags }}
          labels: ${{ steps.meta.outputs.labels }}
+ update-kubernetes:
+   needs: build-and-push-image
+   runs-on: ubuntu-latest
+   steps:
+     - name: Checkout xxTamakixx/nextjs-app-black-kubernetes
+       uses: actions/chckout@v3
+       with:
+        repository: xxTamakixx/nextjs-app-black-kubernetes
+        ref: main
+     - name: Update kubernetes file
+       env:
+        YAML_PATH: black-deployment.yaml
+        CONTAINER_NAME: black-container
+        IMAGE_FULL_NAME: ${{ needs.build-and-push-image.outputs.tags }}
+       run: |
+        yq e -i "(.spec.template.spec.containers[]|select(.name == \"${CONTAINER_NAME}\").image)|=\${IMAGE_FULL_NAME}\"" ${YAML_PATH}
+        cat ${YAML_PATH}
+     - name: Create Pull Request
+       uses: perer-evans/create-pull-request@v5
+       with:
+        token: ${{ secrets.REPO_GITHUB_TOKEN }}
+        title: "Update black-deployment.yaml"
+        base: main
+        draft: true
+        body: |
+          # Change
+          - Update `black-deployment.yaml` image
+
