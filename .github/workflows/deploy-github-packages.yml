@@ -11,6 +11,8 @@ env:
 jobs:
  build-and-push-image:
    runs-on: ubuntu-latest
+   outputs:
+    tags: ${{ steps.meta.outupst.tags }}
    permissions:
      contents: read
      packages: write
