@@ -46,7 +46,7 @@ jobs:
    runs-on: ubuntu-latest
    steps:
      - name: Checkout xxTamakixx/nextjs-app-black-kubernetes
-       uses: actions/chckout@v3
+       uses: actions/checkout@v3
        with:
         repository: xxTamakixx/nextjs-app-black-kubernetes
         ref: main
@@ -59,7 +59,7 @@ jobs:
         yq e -i "(.spec.template.spec.containers[]|select(.name == \"${CONTAINER_NAME}\").image)|=\${IMAGE_FULL_NAME}\"" ${YAML_PATH}
         cat ${YAML_PATH}
      - name: Create Pull Request
-       uses: peter-evans/create-pull-request@v3
+       uses: peter-evans/create-pull-request@v5
        with:
         token: ${{ secrets.REPO_GITHUB_TOKEN }}
         title: "Update black-deployment.yaml"
