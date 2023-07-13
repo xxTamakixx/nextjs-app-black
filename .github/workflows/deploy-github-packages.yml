@@ -56,7 +56,7 @@ jobs:
         CONTAINER_NAME: black-container
         IMAGE_FULL_NAME: ${{ needs.build-and-push-image.outputs.tags }}
        run: |
-        yq e -i "(.spec.template.spec.containers[]|select(.name == \"${CONTAINER_NAME}\").image)|=\${IMAGE_FULL_NAME}\"" ${YAML_PATH}
+        yq e -i "(.spec.template.spec.containers[]|select(.name == \"${CONTAINER_NAME}\").image)|=\"${IMAGE_FULL_NAME}\"" ${YAML_PATH}
         cat ${YAML_PATH}
      - name: Create Pull Request
        uses: peter-evans/create-pull-request@v5
